@@ -1,55 +1,38 @@
 // Tawk.to Live Chat Configuration
 const TAWK_CONFIG = {
     // Your Tawk.to Property ID
-    propertyId: 'your-tawk-property-id',
+    propertyId: '689a86a70de589192ac53bdd',
     
     // Your Tawk.to Widget ID  
-    widgetId: 'your-tawk-widget-id',
+    widgetId: '1j2dps0cp',
     
     // Chat settings
     settings: {
-        // Customize appearance
-        backgroundColor: '#1E40AF',
-        bubbleColor: '#DC2626',
-        
-        // Set initial status
+        backgroundColor: '#1E40AF', // Example custom background color
+        bubbleColor: '#DC2626',     // Example chat bubble color
         status: 'online',
-        
-        // Custom greeting message
         greeting: 'Need help with scam recovery? We\'re here to help 24/7.',
-        
-        // Show chat bubble on page load
         showOnLoad: true,
-        
-        // Position (br = bottom right, bl = bottom left, tr = top right, tl = top left)
-        position: 'br'
+        position: 'br' // bottom right
     }
 };
 
 // Initialize Tawk.to chat widget
 (function() {
     // Only load if we have valid IDs configured
-    if (TAWK_CONFIG.propertyId === 'your-tawk-property-id' || 
-        TAWK_CONFIG.widgetId === 'your-tawk-widget-id') {
-        console.log('Tawk.to configuration needed - please update tawk-config.js with your property and widget IDs');
+    if (!TAWK_CONFIG.propertyId || !TAWK_CONFIG.widgetId) {
+        console.log('Tawk.to configuration missing.');
         return;
     }
     
-    var Tawk_API = Tawk_API || {};
-    var Tawk_LoadStart = new Date();
+    window.Tawk_API = window.Tawk_API || {};
+    window.Tawk_LoadStart = new Date();
     
-    // Configure Tawk.to settings
+    // Configure Tawk.to settings after load
     Tawk_API.onLoad = function() {
         console.log('Tawk.to chat loaded successfully');
         
-        // Set custom styling
-        if (TAWK_CONFIG.settings.backgroundColor) {
-            Tawk_API.setAttributes({
-                'background-color': TAWK_CONFIG.settings.backgroundColor
-            });
-        }
-        
-        // Show custom greeting
+        // Optional: Set custom greeting inside chat
         if (TAWK_CONFIG.settings.greeting) {
             Tawk_API.addEvent('Greeting', {
                 message: TAWK_CONFIG.settings.greeting
@@ -57,11 +40,9 @@ const TAWK_CONFIG = {
         }
     };
     
-    // Handle chat events
+    // Chat events
     Tawk_API.onChatMessageVisitor = function(message) {
         console.log('Visitor message:', message);
-        
-        // Track chat engagement (for analytics)
         if (typeof gtag !== 'undefined') {
             gtag('event', 'chat_message_sent', {
                 'event_category': 'engagement',
@@ -72,8 +53,6 @@ const TAWK_CONFIG = {
     
     Tawk_API.onChatMessageAgent = function(message) {
         console.log('Agent message:', message);
-        
-        // Track agent response (for analytics)
         if (typeof gtag !== 'undefined') {
             gtag('event', 'chat_response_received', {
                 'event_category': 'support',
@@ -82,11 +61,8 @@ const TAWK_CONFIG = {
         }
     };
     
-    // Handle chat start
     Tawk_API.onChatStarted = function() {
         console.log('Chat session started');
-        
-        // Track chat sessions
         if (typeof gtag !== 'undefined') {
             gtag('event', 'chat_started', {
                 'event_category': 'engagement',
@@ -111,35 +87,26 @@ const TAWK_CONFIG = {
 
 // Utility functions for chat management
 window.TawkChat = {
-    // Show chat widget
     show: function() {
         if (typeof Tawk_API !== 'undefined' && Tawk_API.showWidget) {
             Tawk_API.showWidget();
         }
     },
-    
-    // Hide chat widget
     hide: function() {
         if (typeof Tawk_API !== 'undefined' && Tawk_API.hideWidget) {
             Tawk_API.hideWidget();
         }
     },
-    
-    // Maximize chat window
     maximize: function() {
         if (typeof Tawk_API !== 'undefined' && Tawk_API.maximize) {
             Tawk_API.maximize();
         }
     },
-    
-    // Minimize chat window
     minimize: function() {
         if (typeof Tawk_API !== 'undefined' && Tawk_API.minimize) {
             Tawk_API.minimize();
         }
     },
-    
-    // Set visitor information
     setVisitor: function(name, email) {
         if (typeof Tawk_API !== 'undefined' && Tawk_API.setAttributes) {
             Tawk_API.setAttributes({
@@ -148,8 +115,6 @@ window.TawkChat = {
             });
         }
     },
-    
-    // Add tags to the conversation
     addTags: function(tags) {
         if (typeof Tawk_API !== 'undefined' && Tawk_API.addTags) {
             Tawk_API.addTags(tags);
@@ -162,7 +127,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const currentPath = window.location.pathname;
     let chatTags = ['website'];
     
-    // Add page-specific tags
     if (currentPath.includes('crypto-scam')) {
         chatTags.push('crypto-scam');
     } else if (currentPath.includes('pig-butchering')) {
@@ -175,13 +139,11 @@ document.addEventListener('DOMContentLoaded', function() {
         chatTags.push('general-inquiry');
     }
     
-    // Set tags when chat loads
     if (typeof Tawk_API !== 'undefined') {
         Tawk_API.onLoad = function() {
             window.TawkChat.addTags(chatTags);
         };
     } else {
-        // Wait for Tawk to load
         setTimeout(function() {
             if (window.TawkChat) {
                 window.TawkChat.addTags(chatTags);
@@ -190,5 +152,5 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Export configuration for debugging
+// Export config for debugging
 window.TawkConfig = TAWK_CONFIG;
